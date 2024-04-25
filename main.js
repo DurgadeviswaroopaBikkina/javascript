@@ -1,31 +1,51 @@
 const text = document.querySelector(".text");
 const button = document.querySelector(".button");
 const list = document.querySelector(".list");
-button.addEventListener("click",(e)=>{
+
+button.addEventListener("click", (e) => {
     e.preventDefault();
-    const div = document.createElement("div");
+
+
+    const div =document.createElement("div");
     div.classList.add("todo-div");
 
     const items = document.createElement("li");
     items.classList.add("child");
-    items.innerText = text.value 
+    items.innerText = text.value;
 
     div.appendChild(items);
     list.appendChild(div);
 
-    const editButton = document.createElement("button");
+        const editButton = document.createElement("button");
     editButton.classList.add("edit");
-    editButton.innerText = 'edit';
-    div.appendChild("editButton");
+    editButton.innerText = "Edit";
+    div.appendChild(editButton);
 
-    editButton.addEventListener("click",()=>{
+    editButton.addEventListener("click", () => {
         const editInput = document.createElement("input");
         editInput.type = "text";
 
         editInput.value = items.innerText;
-         items.innerHTML= " ";
-         items.appendChild(editInput);
+        
+        items.innerHTML = " ";
+        items.appendChild(editInput);
 
-         editInput.addEventListener("keypress",(e))
-    })
-})
+        editInput.addEventListener("keypress", (e) => {
+            console.log("Hello");
+            if (e.key === "Enter") {
+                items.innerText = editInput.value;
+                console.log("Hello");
+            }
+        });
+    });
+
+    const deleteButton = document.createElement("button");
+    deleteButton.classList.add("delete");
+    deleteButton.innerText ="Delete";
+    div.appendChild(deleteButton);
+
+    deleteButton.addEventListener("click", () =>{
+        div.parentNode.removeChild(div);
+    });
+    text.value ="";
+});
