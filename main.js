@@ -1,51 +1,67 @@
-const text = document.querySelector(".text");
+document.addEventListener("DOMContentLoaded",()=>{
+const storedToDo = JSON.parse(localStorage.getItem("todosList"));
+if(storedToDo){
+    storedToDo.forEach((todo) => {
+        addToDoList(todo);
+    });
+};
+});
+const input = document.querySelector(".input");
 const button = document.querySelector(".button");
-const list = document.querySelector(".list");
+const lists = document.querySelector(".lists");
 
-button.addEventListener("click", (e) => {
-    e.preventDefault();
-
-
-    const div =document.createElement("div");
+function addToDoList(todo){
+    const div = document.createElement("div");
+    const li = document.createElement("li");
     div.classList.add("todo-div");
+    li.classList.add("todo-li");
+    li.innerText = todo.text;
+    div.appendChild(li);
+    li.appendChild(div);
 
-    const items = document.createElement("li");
-    items.classList.add("child");
-    items.innerText = text.value;
-
-    div.appendChild(items);
-    list.appendChild(div);
-
-        const editButton = document.createElement("button");
-    editButton.classList.add("edit");
-    editButton.innerText = "Edit";
+    const deleteButton = document.createElement("button");
+    const editButton = document.createElement("button");
+    editButton.innerHTML = "Edit";
+    deleteButton.innerHTML = "Delete";
     div.appendChild(editButton);
+    div.appendChild(deleteButton);
 
-    editButton.addEventListener("click", () => {
+    deleteButton.addEventListener("click",()=>{
+        div.parentNode.removeChild(div);
+        updateToDoList();
+    });
+
+    editButton.addEventListener("click",()=>{
         const editInput = document.createElement("input");
         editInput.type = "text";
-
-        editInput.value = items.innerText;
-        
-        items.innerHTML = " ";
-        items.appendChild(editInput);
-
-        editInput.addEventListener("keypress", (e) => {
-            console.log("Hello");
-            if (e.key === "Enter") {
-                items.innerText = editInput.value;
-                console.log("Hello");
+        editInput.value = li.innerText.trim();
+        li.innerHTML = "";
+        li.appendChild(editInput);
+        editInput.addEventListener("keypress",(e)=>{
+            if(e.key === "Enter"){
+                li.innerText = editInput.value;
+                updateToDoList();
             }
         });
     });
-
-    const deleteButton = document.createElement("button");
-    deleteButton.classList.add("delete");
-    deleteButton.innerText ="Delete";
-    div.appendChild(deleteButton);
-
-    deleteButton.addEventListener("click", () =>{
-        div.parentNode.removeChild(div);
+};
+ 
+function updateToDoList(){
+    const todos = Array.from(lists.querySelectorAll(".todo-li")).map((item)=>{
+        return{text:item.innerText.trim()};
     });
-    text.value ="";
+    localStorage.setItem("todosList",JSON.stringify(todos));
+}
+button.addEventListener("click",(e)=>{
+    e.preventDefault();
+    if(input.value.trim() !== ""){
+        const todo = {text:input.value.trim()};
+        addToDoList(todo);
+        updateToDoList();
+        input.value="";
+    };
 });
+
+       
+
+   
